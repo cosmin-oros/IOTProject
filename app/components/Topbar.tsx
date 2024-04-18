@@ -14,13 +14,13 @@ const TopBar: React.FC<TopBarProps> = ({ onLogOutPress, title, onSettingsPress }
     <SafeAreaView>
       <View style={styles.container}>
         <TouchableOpacity onPress={onLogOutPress}>
-          <AntDesign name="logout" size={24} color="black" />
+          <AntDesign name="logout" size={24} color="orange" />
         </TouchableOpacity>
         
         <Text style={styles.title}>{title}</Text>
 
         <TouchableOpacity onPress={onSettingsPress}>
-          <Ionicons name="settings" size={24} color="black" />
+          <Ionicons name="settings" size={24} color="orange" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'orange',
   },
 });
 
