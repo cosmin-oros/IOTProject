@@ -28,7 +28,7 @@ const LoginScreen: React.FC = () => {
   }, [lottieRef.current]);
 
   const handleLogin = () => {
-    // check using firebase
+    // ! check using firebase and navigate to home and switch isLoggedIn to true
     console.log("Email:", email);
     console.log("Password:", password);
   };
@@ -77,12 +77,9 @@ const LoginScreen: React.FC = () => {
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        <View style={styles.errorsContainer}></View>
-        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
         <TouchableOpacity style={styles.signup} onPress={handleSignup}>
             <Text style={styles.signupText}>Don't have an account?</Text>
         </TouchableOpacity>
-        {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
       </View>
     </SafeAreaView>
   );
@@ -131,7 +128,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   signup: {
-    marginTop: 20,
+    marginTop: 10,
   },
   signupText: {
     color: "gray",
