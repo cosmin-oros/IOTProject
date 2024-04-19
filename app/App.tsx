@@ -14,7 +14,7 @@ export default function App() {
   return (
     <NavigationContainer>
       {/* <Stack.Navigator initialRouteName={user?.loggedIn ? Routes.Home : Routes.Register}> */}
-      <Stack.Navigator initialRouteName={Routes.Home}>
+      <Stack.Navigator initialRouteName={Routes.Login}>
         <Stack.Screen name={Routes.Register} component={RegisterScreen} options={{ headerShown: false }}/>
         <Stack.Screen name={Routes.Login} component={LoginScreen} options={{ headerShown: false }}/>
         <Stack.Screen name={Routes.Home} component={HomeScreen} options={{ headerShown: false }}/>
