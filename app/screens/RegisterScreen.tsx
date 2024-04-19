@@ -7,6 +7,7 @@ import { RouteParams } from "../routes/types";
 import AnimatedLottieView from 'lottie-react-native';
 import LottieView from 'lottie-react-native';
 import { LottieAnimations } from '../constants'
+import { useUserStore } from "../hooks/useUserStore";
 
 type RoutePropType = StackNavigationProp<RouteParams, Routes.Register>;
 
@@ -19,6 +20,7 @@ const RegisterScreen: React.FC = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const { updateUserProfile } = useUserStore();
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -31,6 +33,7 @@ const RegisterScreen: React.FC = () => {
 
   const handleRegister = () => {
     // ! firebase create account, go to home screen and switch isLoggedIn to true
+    updateUserProfile({ isLoggedIn: true });
     console.log("Email:", email);
     console.log("Password:", password);
   };

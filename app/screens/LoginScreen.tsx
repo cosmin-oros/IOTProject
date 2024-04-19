@@ -7,10 +7,12 @@ import { RouteParams } from "../routes/types";
 import AnimatedLottieView from 'lottie-react-native';
 import LottieView from 'lottie-react-native';
 import { LottieAnimations } from '../constants'
+import { useUserStore } from "../hooks/useUserStore";
 
 type RoutePropType = StackNavigationProp<RouteParams, Routes.Login>;
 
 const LoginScreen: React.FC = () => {
+  const { updateUserProfile } = useUserStore();
   const lottieRef = useRef<AnimatedLottieView|null>(null);
   const navigation = useNavigation<RoutePropType>();
   const [email, setEmail] = useState("");
@@ -29,6 +31,7 @@ const LoginScreen: React.FC = () => {
 
   const handleLogin = () => {
     // ! check using firebase and navigate to home and switch isLoggedIn to true
+    updateUserProfile({ isLoggedIn: true });
     console.log("Email:", email);
     console.log("Password:", password);
   };

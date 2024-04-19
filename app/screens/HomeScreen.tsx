@@ -5,15 +5,17 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteParams } from "../routes/types";
 import { Routes } from "../routes/routes";
 import { useNavigation } from "@react-navigation/native";
+import { useUserStore } from "../hooks/useUserStore";
 
 type RoutePropType = StackNavigationProp<RouteParams, Routes.Home>;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<RoutePropType>();
+  const { updateUserProfile } = useUserStore();
 
   const handleLogOutPress = () => {
-    // ! change the variable in the store to isLoggedIn false
-    // ! or fetch data from firebase to determine if he's loggedin or not
+    // ! logout using firebase
+    updateUserProfile({ isLoggedIn: true });
     navigation.navigate(Routes.Register);
   };
 
