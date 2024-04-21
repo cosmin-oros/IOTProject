@@ -7,12 +7,12 @@ import { RouteParams } from "../routes/types";
 import AnimatedLottieView from 'lottie-react-native';
 import LottieView from 'lottie-react-native';
 import { LottieAnimations } from '../constants'
-import { useUserStore } from "../hooks/useUserStore";
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 type RoutePropType = StackNavigationProp<RouteParams, Routes.Login>;
 
 const LoginScreen: React.FC = () => {
-  const { updateUserProfile } = useUserStore();
+  const auth = getAuth(); 
   const lottieRef = useRef<AnimatedLottieView|null>(null);
   const navigation = useNavigation<RoutePropType>();
   const [email, setEmail] = useState("");
@@ -29,23 +29,44 @@ const LoginScreen: React.FC = () => {
     }
   }, [lottieRef.current]);
 
-  const handleLogin = () => {
-    // ! check using firebase and navigate to home and switch isLoggedIn to true
-    updateUserProfile({ isLoggedIn: true });
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const handleLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password); 
+      // console.log("Login successful", userCredential.user);
+      setEmail("");
+      setPassword("");
+      navigation.navigate(Routes.Home);
+    } catch (error) {
+      // console.error("Login error:", error);
+      setPasswordError("User doesn't exist");
+    }
   };
 
   const handleSignup = () => {
     navigation.navigate(Routes.Register);
   };
 
-  const handleEmailChange = () => {
-    // ! handle errors (fetch from firebase)
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    if (!isValidEmail(text)) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError("");
+    }
   };
 
-  const handlePasswordChange = () => {
-    // ! handle errors
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    if (text.length < 6) {
+      setPasswordError("Password must be at least 6 characters long");
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   return (
@@ -69,14 +90,17 @@ const LoginScreen: React.FC = () => {
             style={styles.input}
           />
         </View>
+        {emailError ? (<View style={styles.errorsContainer}><Text style={styles.errorText}>{emailError}</Text></View>) : null}
         <View style={[styles.inputContainer, {backgroundColor: 'white', width: '100%'}]}>
             <TextInput
               placeholder="Enter your password"
               value={password}
               onChangeText={handlePasswordChange} 
               style={styles.input}
+              secureTextEntry={true}
             />
-          </View>
+        </View>
+        {passwordError ? (<View style={styles.errorsContainer}><Text style={styles.errorText}>{passwordError}</Text></View>) : null}
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>

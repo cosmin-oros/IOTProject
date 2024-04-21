@@ -20,7 +20,7 @@ const RegisterScreen: React.FC = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const { updateUserProfile } = useUserStore();
+  const { registerWithEmailAndPassword } = useUserStore();
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -31,11 +31,17 @@ const RegisterScreen: React.FC = () => {
     }
   }, [lottieRef.current]);
 
-  const handleRegister = () => {
-    // ! firebase create account, go to home screen and switch isLoggedIn to true
-    updateUserProfile({ isLoggedIn: true });
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const handleRegister = async () => {
+    try {
+      await registerWithEmailAndPassword(email, password);
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      navigation.navigate(Routes.Home);
+      // console.log('Registration successful! Navigate to home screen...');
+    } catch (error) {
+      // console.error('Error during registration:', error);
+    }
   };
 
   const handleLogin = () => {
@@ -43,13 +49,13 @@ const RegisterScreen: React.FC = () => {
   };
 
   const handleEmailChange = (text: string) => {
-  setEmail(text);
-  if (!isValidEmail(text)) {
-    setEmailError("Invalid email address");
-  } else {
-    setEmailError("");
-  }
-};
+    setEmail(text);
+    if (!isValidEmail(text)) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError("");
+    }
+  };
 
 const handlePasswordChange = (text: string) => {
   setPassword(text);
@@ -102,6 +108,7 @@ const isValidEmail = (email: string) => {
               value={password}
               onChangeText={handlePasswordChange} 
               style={styles.input}
+              secureTextEntry={true}
             />
         </View>
         {passwordError ? (<View style={styles.errorsContainer}><Text style={styles.errorText}>{passwordError}</Text></View>) : null}
@@ -111,6 +118,7 @@ const isValidEmail = (email: string) => {
               value={confirmPassword}
               onChangeText={handleConfirmPasswordChange} 
               style={styles.input}
+              secureTextEntry={true}
             />
         </View>
         {confirmPasswordError ? (<View style={styles.errorsContainer}><Text style={styles.errorText}>{confirmPasswordError}</Text></View>) : null}

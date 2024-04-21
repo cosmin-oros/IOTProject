@@ -6,17 +6,23 @@ import { RouteParams } from "../routes/types";
 import { Routes } from "../routes/routes";
 import { useNavigation } from "@react-navigation/native";
 import { useUserStore } from "../hooks/useUserStore";
+import { getAuth, signOut } from 'firebase/auth';
 
 type RoutePropType = StackNavigationProp<RouteParams, Routes.Home>;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<RoutePropType>();
-  const { updateUserProfile } = useUserStore();
+  const auth = getAuth();
 
-  const handleLogOutPress = () => {
-    // ! logout using firebase
-    updateUserProfile({ isLoggedIn: true });
-    navigation.navigate(Routes.Register);
+  const handleLogOutPress = async () => {
+    try {
+      // Sign out the current user
+      await signOut(auth);
+      navigation.navigate(Routes.Register);
+    } catch (error) {
+      console.error('Error logging out:', error);
+      // Handle logout error
+    }
   };
 
   const handleSettingsPress = () => {
