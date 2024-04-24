@@ -6,10 +6,9 @@ import { AntDesign } from '@expo/vector-icons';
 interface TopBarProps {
   onLogOutPress: () => void;
   title: string;
-  onSettingsPress: () => void;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ onLogOutPress, title, onSettingsPress }) => {
+const TopBar: React.FC<TopBarProps> = ({ onLogOutPress, title }) => {
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -19,8 +18,8 @@ const TopBar: React.FC<TopBarProps> = ({ onLogOutPress, title, onSettingsPress }
         
         <Text style={styles.title}>{title}</Text>
 
-        <TouchableOpacity onPress={onSettingsPress}>
-          <Ionicons name="settings" size={24} color="orange" />
+        <TouchableOpacity>
+          {/* <Ionicons name="settings" size={24} color="orange" /> */}
         </TouchableOpacity>
       </View>
     </SafeAreaView>

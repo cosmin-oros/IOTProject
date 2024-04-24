@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Platform, SafeAreaView, StatusBar, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import TopBar from "../components/Topbar";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -7,12 +7,17 @@ import { Routes } from "../routes/routes";
 import { useNavigation } from "@react-navigation/native";
 import { useUserStore } from "../hooks/useUserStore";
 import { getAuth, signOut } from 'firebase/auth';
+import AnimatedLottieView from 'lottie-react-native';
+import LottieView from "lottie-react-native";
+import { LottieAnimations } from "../constants";
 
 type RoutePropType = StackNavigationProp<RouteParams, Routes.Home>;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<RoutePropType>();
   const auth = getAuth();
+  const lottieRef = useRef<AnimatedLottieView|null>(null);
+  const [displayLightBulb, setDisplayLightBulb] = useState(false);
 
   const handleLogOutPress = async () => {
     try {
@@ -25,27 +30,38 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const handleSettingsPress = () => {
-    navigation.navigate(Routes.Settings);
-  };
+  useEffect(() => {
+    if (lottieRef.current) {
+      setTimeout(() => {
+        lottieRef.current?.reset();
+        lottieRef.current?.play();
+      }, 100);
+    }
+  }, [lottieRef.current]);
 
   const handleButtonPress = () => {
-    
+    setDisplayLightBulb(!displayLightBulb);
+    // ! interact with raspberry
   };
   
   return (
     <SafeAreaView style={styles.container}>
       <TopBar
         onLogOutPress={handleLogOutPress}
-        title="Title of the app"
-        onSettingsPress={handleSettingsPress}
+        title="LightMonitor"
       />
       <View style={styles.content}>
-        {/* Your main content here */}
-        {/* display temp and maybe a lottie with a progress bar for the temp */}
+        {displayLightBulb && (<LottieView
+        ref={lottieRef}
+        speed={1}
+        source={LottieAnimations.lightbulb}
+        autoPlay={true}
+        loop={true}
+        style={styles.lottie} 
+      />)}
       </View>
       <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-        <Text style={styles.buttonText}>Button</Text>
+        <Text style={styles.buttonText}>{displayLightBulb ? 'Turn Off' : 'Turn On'}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -72,6 +88,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  lottie: {
+    width: '100%',
+    height: '80%',
   },
 });
 
