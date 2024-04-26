@@ -34,3 +34,99 @@ html, body {
   justify-content: center;
   height: 100vh; 
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.imageContainer {
+  max-height: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formContainer {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.input {
+  font-size: medium;
+  padding-left: 20px;
+  color: rgb(214, 213, 213);
+  width: 284px;
+  height: 58px;
+  flex-shrink: 0;
+  border-radius: 17px;
+  border: 1px solid #505050;
+  background: #1B1B1B;
+  font-family: Inter;
+  outline: none;
+  transition: all 0.2s;
+  margin-bottom: 10px;
+}
+
+.input:hover {
+  font-weight: bold; 
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.button {
+  margin: 0 40px;
+  text-align: center;
+  font-size: large;
+  color: rgb(214, 213, 213);
+  padding-left: 20px;
+  height: 58px;
+  width: 308px;
+  flex-shrink: 0;
+  border-radius: 17px;
+  border: 1px solid #505050;
+  background-color: orange;
+  font-family: Inter;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;background-color: orange;
+  padding: 15px 40px;
+  border-radius: 25px;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  font-weight: bold; 
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+  border: 2px solid #505050;
+}
+
+.login {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: gray;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.errorText {
+  color: red;
+}
+
+.errorsContainer {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  width: 100%;
+  margin-bottom: 10px;
+}
+

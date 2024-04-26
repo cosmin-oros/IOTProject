@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles.css'
+import { app, auth } from '../firebase/firebase';
 
 const MainPage = () => {
 
