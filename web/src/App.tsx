@@ -6,7 +6,6 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import TablePage from './pages/TablePage';
 import GraphPage from './pages/GraphPage';
-import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { app, auth } from './firebase/firebase';
 

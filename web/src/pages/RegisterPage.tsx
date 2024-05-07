@@ -5,9 +5,11 @@ import lightbulbAnimation from "../assets/lightbulb.json";
 import '../styles.css'
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { app, auth } from '../firebase/firebase';
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage: React.FC = () => {
   const lottieRef = useRef<Lottie|null>(null);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState("");
@@ -37,19 +39,19 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      // ! doesn't work yet
       await registerWithEmailAndPassword(email, password);
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      window.location.href = PageRoutes.Main; 
+      navigate(PageRoutes.Main);
     } catch (error) {
-
+      console.error('Error during registration:', error);
     }
   };
 
+
   const handleLogin = () => {
-    window.location.href = PageRoutes.Login; 
+    navigate(PageRoutes.Login); 
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
