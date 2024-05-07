@@ -1,3 +1,5 @@
+/* styles.css */
+
 html, body {
   background-color: #0E0E0E;
   color: white;
@@ -130,3 +132,13 @@ html, body {
   margin-bottom: 10px;
 }
 
+.logout-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 1.5rem; 
+  position: absolute;
+  top: 40px; 
+  right: 60px; 
+}
