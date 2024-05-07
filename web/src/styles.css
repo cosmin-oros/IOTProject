@@ -142,3 +142,33 @@ html, body {
   top: 40px; 
   right: 60px; 
 }
+
+.table-btn,
+.graph-btn {
+  text-align: center;
+  font-size: large;
+  color: rgb(214, 213, 213);
+  padding-left: 20px;
+  height: 58px;
+  width: 200px; 
+  flex-shrink: 0;
+  border-radius: 17px;
+  border: 1px solid #505050;
+  background-color: orange;
+  font-family: Inter;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s; 
+  padding: 15px 40px;
+  border-radius: 25px;
+  margin-top: 60px;
+  border: none;
+  cursor: pointer;
+}
+
+.table-btn:hover,
+.graph-btn:hover {
+  font-weight: bold; 
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+  border: 2px solid #505050;
+}

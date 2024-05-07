@@ -1,21 +1,33 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
 import { FaSignOutAlt } from 'react-icons/fa'; 
 import '../styles.css';
 import { PageRoutes } from '../routes/PageRoutes';
+import Lottie from 'react-lottie';
+import lightbulbAnimation from "../assets/lightbulb.json"; 
 
 const MainPage = () => {
   const navigate = useNavigate();
+  const lottieRef = useRef<Lottie|null>(null);
+  
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: lightbulbAnimation,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
 
   const onTablePress = () => {
     // Navigate to the table page
-    navigate('/table');
+    navigate(PageRoutes.Table);
   };
 
   const onGraphPress = () => {
     // Navigate to the graph page
-    navigate('/graph');
+    navigate(PageRoutes.Graph);
   };
 
   const handleLogout = async () => {
@@ -36,11 +48,19 @@ const MainPage = () => {
         </button>
       </div>    
       <div className='content'>
+        <div className="imageContainer">
+          <Lottie
+            ref={lottieRef}
+            options={defaultOptions}
+            height={600}
+            width={600}
+          />
+        </div>
         <div className='row-container'>
-          <button className='btn-main' onClick={onTablePress}>
+          <button className='button table-btn' onClick={onTablePress}>
             Table
           </button>
-          <button className='btn-main' onClick={onGraphPress}>
+          <button className='button graph-btn' onClick={onGraphPress}>
             Graph
           </button>
         </div>
