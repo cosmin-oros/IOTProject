@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-import '../styles.css';
 import { useNavigate } from 'react-router-dom';
 import { PageRoutes } from '../routes/PageRoutes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
+import { format } from 'date-fns';
 
 Chart.register(...registerables);
 
@@ -15,20 +16,37 @@ const GraphPage = () => {
   const navigate = useNavigate();
   const chartRef = useRef<HTMLCanvasElement>(null);
   const [chartInstance, setChartInstance] = useState<ChartInstance | null>(null);
+  const [data, setData] = useState<any>({ labels: [], datasets: [{ label: 'Light Bulb Usage', data: [], fill: false, borderColor: 'orange' }] });
 
-  // ! replace mock data with data from firestore
+  useEffect(() => {
+    const fetchData = async () => {
+      const db = getFirestore();
+      const ledStateCollectionRef = collection(db, 'ledState');
+      const q = query(ledStateCollectionRef, orderBy('timestamp', 'asc'));
 
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-      {
-        label: 'Light Bulb Usage',
-        data: [12, 19, 3, 5, 2, 3, 20],
-        fill: false,
-        borderColor: 'orange',
-      },
-    ],
-  };
+      onSnapshot(q, (querySnapshot) => {
+        const newData = {
+          labels: [] as string[], // Explicit type annotation for labels as an array of strings
+          datasets: [{ label: 'Light Bulb Usage', data: [] as boolean[], fill: false, borderColor: 'orange' }],
+        };
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as { isOn: boolean, timestamp: number }; // Explicit type annotation for the data object
+          newData.labels.push(formatDate(data.timestamp)); // Format timestamp
+          newData.datasets[0].data.push(data.isOn); 
+        });
+
+        setData(newData);
+      });
+    };
+
+    fetchData();
+
+    return () => {
+      // Cleanup (optional)
+    };
+  }, []);
+
 
   useEffect(() => {
     let newChartInstance: ChartInstance | null = null;
@@ -44,7 +62,10 @@ const GraphPage = () => {
         options: {
           scales: {
             x: {
-              type: 'category',
+              type: 'time', 
+              time: {
+                unit: 'day', 
+              },
             },
           },
         },
@@ -62,6 +83,11 @@ const GraphPage = () => {
 
   const handleBack = () => {
     navigate(PageRoutes.Main);
+  };
+
+  // Function to format timestamp using date-fns
+  const formatDate = (timestamp: number): string => {
+    return format(new Date(timestamp), 'yyyy-MM-dd'); // Format timestamp using date-fns
   };
 
   return (
