@@ -6,7 +6,7 @@ import { RouteParams } from "../routes/types";
 import { Routes } from "../routes/routes";
 import { useNavigation } from "@react-navigation/native";
 import { useUserStore } from "../hooks/useUserStore";
-import { doc, setDoc, getFirestore } from 'firebase/firestore';
+import { doc, setDoc, getFirestore, serverTimestamp } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import AnimatedLottieView from 'lottie-react-native';
 import LottieView from "lottie-react-native";
@@ -50,7 +50,8 @@ const HomeScreen: React.FC = () => {
 
       // Update the document with the new LED state data
       await setDoc(ledStateDocRef, {
-        isOn: !displayLightBulb
+        isOn: !displayLightBulb,
+        timestamp: serverTimestamp()
       });
     } catch (error) {
       console.error('Error updating LED state:', error);
