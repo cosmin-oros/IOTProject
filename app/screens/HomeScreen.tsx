@@ -6,6 +6,7 @@ import { RouteParams } from "../routes/types";
 import { Routes } from "../routes/routes";
 import { useNavigation } from "@react-navigation/native";
 import { useUserStore } from "../hooks/useUserStore";
+import { doc, setDoc, getFirestore } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import AnimatedLottieView from 'lottie-react-native';
 import LottieView from "lottie-react-native";
@@ -14,6 +15,7 @@ import { LottieAnimations } from "../constants";
 type RoutePropType = StackNavigationProp<RouteParams, Routes.Home>;
 
 const HomeScreen: React.FC = () => {
+  const db = getFirestore();
   const navigation = useNavigation<RoutePropType>();
   const auth = getAuth();
   const lottieRef = useRef<AnimatedLottieView|null>(null);
@@ -39,9 +41,21 @@ const HomeScreen: React.FC = () => {
     }
   }, [lottieRef.current]);
 
-  const handleButtonPress = () => {
+  const handleButtonPress = async () => {
     setDisplayLightBulb(!displayLightBulb);
-    // ! interact with raspberry
+    
+    try {
+      // Get a reference to the document where you store the LED state
+      const ledStateDocRef = doc(db, 'ledState', 'state');
+
+      // Update the document with the new LED state data
+      await setDoc(ledStateDocRef, {
+        isOn: !displayLightBulb
+      });
+    } catch (error) {
+      console.error('Error updating LED state:', error);
+      // Handle Firestore error
+    }
   };
   
   return (
