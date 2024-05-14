@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageRoutes } from '../routes/PageRoutes';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, limit } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
@@ -21,21 +21,19 @@ const TablePage: React.FC = () => {
     const fetchData = async () => {
       try {
         const db = getFirestore();
-        const ledStateCollectionRef = collection(db, 'ledState');
-        const q = query(ledStateCollectionRef, orderBy('timestamp', 'asc'));
+        const ledStateCollectionRef = collection(db, 'ledStates');
+        const q = query(ledStateCollectionRef, orderBy('timestamp', 'desc'), limit(20));
 
         onSnapshot(q, (querySnapshot) => {
           const newData: TableDataRow[] = [];
           querySnapshot.forEach((doc) => {
             const data = doc.data() as { isOn: boolean; timestamp: Timestamp };
-            if (data.isOn) {
-              newData.push({
-                timestamp: formatDate(data.timestamp.toDate().getTime()),
-                isOn: data.isOn ? 'On' : 'Off',
-              });
-            }
+            newData.push({
+              timestamp: formatDate(data.timestamp.toDate().getTime()),
+              isOn: data.isOn ? 'On' : 'Off',
+            });
           });
-          setTableData(newData);
+          setTableData(newData.reverse());
         });
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -49,11 +47,12 @@ const TablePage: React.FC = () => {
     navigate(PageRoutes.Main);
   };
 
+  // Function to format timestamp using date-fns
   const formatDate = (timestamp: number): string => {
     if (isNaN(timestamp) || timestamp < 0) {
       return ''; // Return an empty string for invalid timestamps
     }
-    return format(new Date(timestamp), 'yyyy-MM-dd'); // Format valid timestamps using date-fns
+    return format(new Date(timestamp), 'yyyy-MM-dd HH:mm:ss'); // Format valid timestamps using date-fns
   };
 
   return (
@@ -65,7 +64,7 @@ const TablePage: React.FC = () => {
       </div>
       <div className='content'>
         <div className='table-container'>
-          <table>
+          <table className='grid-table'>
             <thead>
               <tr>
                 <th>Timestamp</th>
