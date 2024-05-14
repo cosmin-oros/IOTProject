@@ -6,7 +6,7 @@ import { RouteParams } from "../routes/types";
 import { Routes } from "../routes/routes";
 import { useNavigation } from "@react-navigation/native";
 import { useUserStore } from "../hooks/useUserStore";
-import { doc, setDoc, getFirestore, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import AnimatedLottieView from 'lottie-react-native';
 import LottieView from "lottie-react-native";
@@ -20,6 +20,28 @@ const HomeScreen: React.FC = () => {
   const auth = getAuth();
   const lottieRef = useRef<AnimatedLottieView|null>(null);
   const [displayLightBulb, setDisplayLightBulb] = useState(false);
+  const [states, setStates] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchStates = async () => {
+      try {
+        const statesCollectionRef = collection(db, 'ledStates');
+        const q = query(statesCollectionRef, orderBy('timestamp', 'desc'), limit(10)); // Fetch last 10 states
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const statesData: any[] = [];
+          querySnapshot.forEach((doc) => {
+            statesData.push({ id: doc.id, ...doc.data() });
+          });
+          setStates(statesData);
+        });
+        return unsubscribe;
+      } catch (error) {
+        console.error('Error fetching LED states:', error);
+      }
+    };
+
+    fetchStates();
+  }, []);
 
   const handleLogOutPress = async () => {
     try {
@@ -32,25 +54,14 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (lottieRef.current) {
-      setTimeout(() => {
-        lottieRef.current?.reset();
-        lottieRef.current?.play();
-      }, 100);
-    }
-  }, [lottieRef.current]);
-
   const handleButtonPress = async () => {
-    setDisplayLightBulb(!displayLightBulb);
+    const newState = !displayLightBulb;
+    setDisplayLightBulb(newState);
     
     try {
-      // Get a reference to the document where you store the LED state
-      const ledStateDocRef = doc(db, 'ledState', 'state');
-
-      // Update the document with the new LED state data
-      await setDoc(ledStateDocRef, {
-        isOn: !displayLightBulb,
+      // Add a new state document to the collection
+      await addDoc(collection(db, 'ledStates'), {
+        isOn: newState,
         timestamp: serverTimestamp()
       });
     } catch (error) {

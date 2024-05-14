@@ -23,34 +23,32 @@ const GraphPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-    try {
-      const db = getFirestore();
-      const ledStateCollectionRef = collection(db, 'ledState');
-      const q = query(ledStateCollectionRef, orderBy('timestamp', 'asc'));
+      try {
+        const db = getFirestore();
+        const ledStateCollectionRef = collection(db, 'ledStates');
+        const q = query(ledStateCollectionRef, orderBy('timestamp', 'asc'));
 
-      onSnapshot(q, (querySnapshot) => {
-        const newData = {
-          labels: [] as string[],
-          datasets: [{ label: 'Light Bulb Usage', data: [] as boolean[], fill: false, borderColor: 'orange' }],
-        };
+        onSnapshot(q, (querySnapshot) => {
+          const newData = {
+            labels: [] as string[],
+            datasets: [{ label: 'Light Bulb Usage', data: [] as number[], fill: false, borderColor: 'orange' }],
+          };
 
-        querySnapshot.forEach((doc) => {
-          const data = doc.data() as { isOn: boolean; timestamp: Timestamp }; // Adjust type to firebase.firestore.Timestamp
-          const timestamp = data.timestamp.toDate().getTime(); // Convert Firestore Timestamp to JavaScript Date and extract timestamp value in milliseconds
-          console.log("Timestamp:", timestamp); // Log timestamp value
-          newData.labels.push(formatDate(timestamp));
-          newData.datasets[0].data.push(data.isOn);
+          querySnapshot.forEach((doc) => {
+            const data = doc.data() as { isOn: boolean; timestamp: Timestamp }; // Adjust type to firebase.firestore.Timestamp
+            const timestamp = data.timestamp.toDate().getTime(); // Convert Firestore Timestamp to JavaScript Date and extract timestamp value in milliseconds
+            newData.labels.push(formatDate(timestamp));
+            newData.datasets[0].data.push(data.isOn ? 1 : 0); // Convert boolean to 0 or 1
+          });
+
+          setData(newData);
+          setLoading(false);
         });
-
-        setData(newData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
         setLoading(false);
-      });
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
-    }
-  };
-
+      }
+    };
 
     fetchData();
 
@@ -94,9 +92,15 @@ const GraphPage = () => {
     if (isNaN(timestamp) || timestamp < 0) {
       return ''; // Return an empty string for invalid timestamps
     }
-    return format(new Date(timestamp), 'yyyy-MM-dd'); // Format valid timestamps using date-fns
+    const date = new Date(timestamp);
+    const year = date.getUTCFullYear();
+    const month = `0${date.getUTCMonth() + 1}`.slice(-2);
+    const day = `0${date.getUTCDate()}`.slice(-2);
+    const hours = `0${date.getUTCHours()}`.slice(-2);
+    const minutes = `0${date.getUTCMinutes()}`.slice(-2);
+    const seconds = `0${date.getUTCSeconds()}`.slice(-2);
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
-
 
   return (
     <div className='main-container'>

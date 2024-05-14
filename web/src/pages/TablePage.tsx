@@ -5,6 +5,8 @@ import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 type TableDataRow = {
   timestamp: string;
@@ -58,7 +60,7 @@ const TablePage: React.FC = () => {
     <div className='main-container'>
       <div className='main-header'>
         <button className='back-btn' onClick={handleBack}>
-          Back
+          <FontAwesomeIcon icon={faArrowLeft} />
         </button>
       </div>
       <div className='content'>
