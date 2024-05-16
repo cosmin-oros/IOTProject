@@ -22,7 +22,6 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # Setup GPIO pin for LED
-# ! change here
 LED_PIN = 17
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
@@ -34,9 +33,9 @@ def on_led_state_change(doc_snapshot, changes, read_time):
         led_state = doc.to_dict().get('isOn')
         control_led(led_state)
 
-# Listen for LED state changes
-led_state_ref = db.collection('ledState').document('state')
-led_state_watch = led_state_ref.on_snapshot(on_led_state_change)
+# Listen for LED state changes in all documents within the 'ledStates' collection
+led_states_ref = db.collection('ledStates')
+led_states_watch = led_states_ref.on_snapshot(on_led_state_change)
 
 # Function to control LED based on state
 def control_led(state):
